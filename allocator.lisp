@@ -6,12 +6,17 @@
 
 (in-package #:org.shirakumo.memory-regions)
 
-(define-condition allocator-error (error)
+(define-condition allocator-condition ()
   ((allocator :initarg :allocator :reader allocator)))
 
-(define-condition out-of-memory (allocator-error)
+(define-condition out-of-memory (error allocator-condition)
   ()
   (:report (lambda (c s) (format s "The allocator is out of memory."))))
+
+(define-condition block-too-big (error allocator-condition)
+  ((size :initarg :size :reader size))
+  (:report (lambda (c s) (format s "The requested block size of ~d octets is too big."
+                                 (size c)))))
 
 (defclass allocator () ())
 

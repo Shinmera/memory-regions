@@ -17,8 +17,8 @@
                :memory-regions/allocator
                :memory-regions/sequence
                :memory-regions/stream
-               :memory-regions/pathname
-               :documentation-utils))
+               :memory-regions/object
+               :memory-regions/pathname))
 
 (asdf:defsystem memory-regions/region
   :serial T
@@ -27,7 +27,8 @@
                (:file "memory-region")
                (:file "allocator")
                (:file "documentation"))
-  :depends-on (:cffi))
+  :depends-on (:cffi
+               :documentation-utils))
 
 (asdf:defsystem memory-regions/allocator
   :serial T
@@ -39,7 +40,7 @@
 (asdf:defsystem memory-regions/sequence
   :serial T
   :components ((:file "sequence"))
-  :depends-on (:memory-regions/region
+  :depends-on (:memory-regions/allocator
                :trivial-extensible-sequences))
 
 (asdf:defsystem memory-regions/stream
@@ -47,6 +48,12 @@
   :components ((:file "stream"))
   :depends-on (:memory-regions/region
                :trivial-gray-streams))
+
+(asdf:defsystem memory-regions/object
+  :serial T
+  :components ((:file "object"))
+  :depends-on (:memory-regions/region
+               :closer-mop))
 
 (asdf:defsystem memory-regions/pathname
   :serial T

@@ -9,9 +9,11 @@
   (:shadow #:fill #:replace)
   ;; allocator.lisp
   (:export
-   #:allocator-error
+   #:allocator-condition
    #:allocator
    #:out-of-memory
+   #:block-too-big
+   #:size
    #:allocator
    #:allocate
    #:deallocate
@@ -46,6 +48,10 @@
    #:memory-region-ish)
   ;; null-allocator.lisp
   (:export)
+  ;; object.lisp
+  (:export
+   #:memory-region-object
+   #:to-object)
   ;; pathname.lisp
   (:export)
   ;; sequence.lisp

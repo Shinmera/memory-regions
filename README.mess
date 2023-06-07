@@ -2,3 +2,58 @@
 This library implements the concept of a "memory region" along with several useful tools to deal with them. A memory region is simply a pointer with a size, to provider safer access to foreign memory.
 
 ## How To
+Load the memory-regions system, or one of its subsystems if you only need select parts of the library.
+
+Specifically:
+
+- ``memory-regions/region``
+  Provides the base memory region type and protocol.
+- ``memory-regions/allocator``
+  Provides the allocator protocol and some base implementations.
+- ``memory-regions/sequence``
+  Provides the ability to coerce a memory region to a sequence.
+- ``memory-regions/stream``
+  Provides the ability to coerce a memory region to a stream.
+- ``memory-regions/object``
+  Provides the ability to coerce a memory region to an object.
+- ``memory-regions/pathname``
+  Provides the ability to turn files into memory regions.
+- ``memory-regions``
+  All of the above.
+
+Memory regions can be created in a couple of ways:
+
+- ``memory-region``
+  Create a memory region directly from a raw pointer and size.
+  The region will not know anything about memory ownership and it is up to you to ensure that it is not dereferenced after the memory has been freed.
+- ``to-memory-region``
+  Coerce another object to a memory region. This will only work for objects that are backed by a memory region themselves, or otherwise have memory that remains static and does not move.
+- ``with-memory-region``
+  Coerce another object to a memory region. This will notably work for more objects than ``to-memory-region``, such as standard vectors and arrays, as those can be pinned in place for the duration of the body. This also means that it is a very bad idea to use the provided memory region outside of the body or let it escape in some other way.
+- ``allocate``
+  Allocate a memory region within the context of an ``allocator``. See ``with-arena`` as well for lexically scoped regions. Using the ``NIL`` allocator is equivalent to manually allocating memory and constructing a region with it.
+
+In the last case you can also make use of several other functions to manipulate memory regions:
+
+- ``deallocate``
+  Free the represented memory again. This invalidates the memory region.
+- ``reallocate``
+  Change the size of the memory region. This may move the memory region's pointer, though, so beware of using this if you passed the raw pointer elsewhere.
+
+You can also use memory regions as a convenient way to manipulate the memory they back:
+
+- ``clear``
+  Clears the backed memory out with zeroes.
+- ``fill``
+  Fills the backed memory with the provided byte.
+- ``replace``
+  Replaces the backed memory contents with data from the provided source. This is notably nice because both the destination and source can be things that ``with-memory-region`` can coerce.
+
+Finally, with the above extension systems you can also use memory regions in conjunction with other libraries that usually can't directly interface with foreign memory:
+
+- ``to-stream``
+  Creates a binary-stream that is backed by the memory region. You can transparently write to and read from this, making it especially useful for getting file format libraries to parse from memory directly.
+- ``to-sequence``
+  Creates a sequence that is backed by the memory region. The nice thing about this wrapper is that it can wrap even complex CFFI types, providing a more lisp-native access to foreign memory.
+- ``to-object``
+  Creates an object that is backed by the memory region. This allows you to access a foreign structure's slots via ``slot-value``.
