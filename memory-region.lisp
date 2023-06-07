@@ -58,16 +58,16 @@
 
 (defmethod clear ((region memory-region))
   (cffi:foreign-funcall "memset" :pointer (memory-region-pointer region)
-                                 :size (memory-region-size region)
                                  :int 0
+                                 :size (memory-region-size region)
                                  :void)
   region)
 
 (defmethod fill ((region memory-region) byte)
   (check-type byte (unsigned-byte 8))
   (cffi:foreign-funcall "memset" :pointer (memory-region-pointer region)
-                                 :size (memory-region-size region)
                                  :int byte
+                                 :size (memory-region-size region)
                                  :void)
   region)
 
