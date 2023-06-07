@@ -46,7 +46,7 @@
                 (128 :int128))))
            (error "Unknown element type: ~a" type)))))
 
-(defmacro with-pointer-to-vector-data ((ptr data &key (direction :input)) &body body)
+(defmacro with-pointer-to-array-data ((ptr data &key (direction :input)) &body body)
   (declare (ignorable direction))
   (let ((datag (gensym "DATA")) (thunk (gensym "THUNK"))
         (type (gensym "TYPE")) (i (gensym "I")) (dirg (gensym "DIRECTION")))

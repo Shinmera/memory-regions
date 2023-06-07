@@ -7,4 +7,55 @@
 (defpackage #:org.shirakumo.memory-regions
   (:use #:cl)
   (:shadow #:fill #:replace)
-  (:export))
+  ;; allocator.lisp
+  (:export
+   #:allocator-error
+   #:allocator
+   #:out-of-memory
+   #:allocator
+   #:allocate
+   #:deallocate
+   #:reallocate
+   #:total-size
+   #:free-space
+   #:used-space
+   #:minimum-block-size
+   #:maximum-block-size
+   #:*allocator*
+   #:*standard-allocator*
+   #:with-arena)
+  ;; bump-allocator.lisp
+  (:export
+   #:bump-allocator)
+  ;; memory-region.lisp
+  (:export
+   #:start
+   #:end
+   #:size
+   #:to-memory-region
+   #:call-with-memory-region
+   #:clear
+   #:fill
+   #:replace
+   #:subregion
+   #:with-memory-region
+   #:memory-region
+   #:memory-region-pointer
+   #:memory-region-size
+   #:memory-region-valid-p
+   #:memory-region-ish)
+  ;; null-allocator.lisp
+  (:export)
+  ;; pathname.lisp
+  (:export)
+  ;; sequence.lisp
+  (:export
+   #:memory-region-sequence
+   #:to-sequence)
+  ;; stream.lisp
+  (:export
+   #:memory-region-stream
+   #:to-stream)
+  ;; toolkit.lisp
+  (:export
+   #:with-pointer-to-array-data))

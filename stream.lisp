@@ -56,7 +56,7 @@
          (size (size stream))
          (to-copy (min (- tend tstart) (- size index))))
     (when (< 0 to-copy)
-      (with-pointer-to-vector-data (ptr sequence :direction :output)
+      (with-pointer-to-array-data (ptr sequence :direction :output)
         (cffi:foreign-funcall "memcpy" :pointer ptr :pointer (cffi:inc-pointer start index) :size to-copy)))
     to-copy))
 
@@ -68,6 +68,6 @@
          (size (size stream))
          (to-copy (min (- tend tstart) (- size index))))
     (when (< 0 to-copy)
-      (with-pointer-to-vector-data (ptr sequence :direction :input)
+      (with-pointer-to-array-data (ptr sequence :direction :input)
         (cffi:foreign-funcall "memcpy" :pointer (cffi:inc-pointer start index) :pointer ptr :size to-copy)))
     to-copy))
