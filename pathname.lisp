@@ -21,7 +21,7 @@
   region)
 
 (defmethod to-memory-region ((pathname pathname))
-  (multiple-value-bind (ptr fd size) (mmap:mmap pathname)
+  (multiple-value-bind (ptr fd size) (mmap:mmap pathname :open '(:read :write) :protection '(:read :write))
     (pathname-memory-region ptr fd size)))
 
 (defmethod call-with-memory-region (function (data pathname) &key (offset 0))
