@@ -1,0 +1,5 @@
+## About memory-regions
+This library implements the concept of a "memory region" along with several useful tools to deal with them. A memory region is simply a pointer with a size, to provider safer access to foreign memory.
+
+## How To
+
