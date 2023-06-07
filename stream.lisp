@@ -55,21 +55,9 @@
          (index (index stream))
          (size (size stream))
          (to-copy (min (- tend tstart) (- size index))))
-    (cond #+sbcl
-          ((typep sequence 'sb-kernel:simple-unboxed-array)
-           (sb-sys:with-pinned-objects (sequence)
-             (static-vectors:replace-foreign-memory 
-              (sb-sys:vector-sap sequence) (cffi:inc-pointer start index) to-copy)))
-          #+sbcl
-          ((typep sequence '(and vector (not simple-array)))
-           (let ((sequence (sb-ext:array-storage-vector sequence)))
-             (sb-sys:with-pinned-objects (sequence)
-               (static-vectors:replace-foreign-memory 
-                (sb-sys:vector-sap sequence) (cffi:inc-pointer start index) to-copy))))
-          (T
-           (dotimes (i to-copy)
-             (setf (aref sequence (+ i tstart)) (cffi:mem-aref start :uint8 (+ index i))))
-           (setf (index stream) (+ index to-copy))))
+    (when (< 0 to-copy)
+      (with-pointer-to-vector-data (ptr sequence :direction :output)
+        (cffi:foreign-funcall "memcpy" :pointer ptr :pointer (cffi:inc-pointer start index) :size to-copy)))
     to-copy))
 
 (defmethod trivial-gray-streams:stream-write-sequence ((stream memory-region-stream) (sequence vector) start end &key)
@@ -79,19 +67,7 @@
          (index (index stream))
          (size (size stream))
          (to-copy (min (- tend tstart) (- size index))))
-    (cond #+sbcl
-          ((typep sequence 'sb-kernel:simple-unboxed-array)
-           (sb-sys:with-pinned-objects (sequence)
-             (static-vectors:replace-foreign-memory 
-              (cffi:inc-pointer start index) (sb-sys:vector-sap sequence) to-copy)))
-          #+sbcl
-          ((typep sequence '(and vector (not simple-array)))
-           (let ((sequence (sb-ext:array-storage-vector sequence)))
-             (sb-sys:with-pinned-objects (sequence)
-               (static-vectors:replace-foreign-memory 
-                (cffi:inc-pointer start index) (sb-sys:vector-sap sequence) to-copy))))
-          (T
-           (dotimes (i to-copy)
-             (setf (cffi:mem-aref start :uint8 (+ index i)) (aref sequence (+ i tstart))))
-           (setf (index stream) (+ index to-copy))))
+    (when (< 0 to-copy)
+      (with-pointer-to-vector-data (ptr sequence :direction :input)
+        (cffi:foreign-funcall "memcpy" :pointer (cffi:inc-pointer start index) :pointer ptr :size to-copy)))
     to-copy))

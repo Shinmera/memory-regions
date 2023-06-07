@@ -134,7 +134,7 @@
 (defmethod replace (dst src &rest args)
   (with-memory-region (dst dst)
     (with-memory-region (src src)
-      (apply #'replace-region dst src args))))
+      (apply #'replace dst src args))))
 
 (defclass memory-region-ish () ())
 
