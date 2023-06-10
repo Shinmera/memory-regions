@@ -103,8 +103,9 @@
     (declare (dynamic-extent vector))
     (call-with-memory-region function vector)))
 
-(defmethod call-with-memory-region ((function function) pointer &key size (start 0))
-  (let ((region (memory-region (cffi:inc-pointer pointer start) (- size start))))
+(defmethod call-with-memory-region ((function function) pointer &key (size 0) (start 0))
+  (let ((region (memory-region (cffi:inc-pointer pointer start)
+                               (max 0 (- size start)))))
     (declare (dynamic-extent region))
     (funcall function region)))
 
