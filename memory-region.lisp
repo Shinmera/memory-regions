@@ -97,6 +97,12 @@
     (declare (dynamic-extent region))
     (funcall function region)))
 
+(defmethod call-with-memory-region ((function function) (null null) &key (start 0))
+  (declare (ignore start))
+  (let ((region (memory-region (cffi:null-pointer) 0)))
+    (declare (dynamic-extent region))
+    (funcall function region)))
+
 (defmethod call-with-memory-region ((function function) (size integer) &key (start 0))
   (decf size start)
   (cffi:with-foreign-pointer (ptr size)
@@ -111,7 +117,7 @@
     (declare (dynamic-extent region))
     (funcall function region)))
 
-(defmethod call-with-memory-region ((function function) (data vector) &key (start 0) (direction :input))
+(defmethod call-with-memory-region ((function function) (data array) &key (start 0) (direction :input))
   (declare (optimize speed))
   (declare (type (unsigned-byte 32) start))
   (let* ((type (array-element-type data))
