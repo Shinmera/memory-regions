@@ -105,6 +105,7 @@
       (funcall function region))))
 
 (defmethod call-with-memory-region ((function function) pointer &key (size 0) (start 0))
+  (check-type pointer cffi:foreign-pointer)
   (let ((region (memory-region (cffi:inc-pointer pointer start)
                                (max 0 (- size start)))))
     (declare (dynamic-extent region))
