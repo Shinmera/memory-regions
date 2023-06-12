@@ -99,9 +99,10 @@
 
 (defmethod call-with-memory-region ((function function) (size integer) &key (start 0))
   (decf size start)
-  (let ((vector (make-array size :element-type '(unsigned-byte 8) :initial-element 0)))
-    (declare (dynamic-extent vector))
-    (call-with-memory-region function vector)))
+  (cffi:with-foreign-pointer (ptr size)
+    (let ((region (memory-region ptr size)))
+      (declare (dynamic-extent region))
+      (funcall function region))))
 
 (defmethod call-with-memory-region ((function function) pointer &key (size 0) (start 0))
   (let ((region (memory-region (cffi:inc-pointer pointer start)
