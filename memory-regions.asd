@@ -32,9 +32,9 @@
 
 (asdf:defsystem memory-regions/allocator
   :serial T
-  :components ((:file "allocator")
-               (:file "null-allocator")
-               (:file "bump-allocator"))
+  :components ((:file "null-allocator")
+               (:file "bump-allocator")
+               (:file "documentation"))
   :depends-on (:memory-regions/region))
 
 (asdf:defsystem memory-regions/sequence
