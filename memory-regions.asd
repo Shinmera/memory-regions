@@ -53,4 +53,5 @@
   :serial T
   :components ((:file "pathname"))
   :depends-on (:memory-regions/region
+               :static-vectors
                :mmap))
