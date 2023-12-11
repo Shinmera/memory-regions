@@ -25,6 +25,13 @@
                    (,thunk ,region))))
             `(call-with-memory-region #',thunk ,data/size ,@args)))))
 
+(defmacro with-memory-regions (regions &body body)
+  (if (null regions)
+      `(progn ,@body)
+      `(with-memory-region ,(first regions)
+         (with-memory-regions ,(rest regions)
+           ,@body))))
+
 (declaim (inline memory-region memory-region-pointer memory-region-size))
 (defstruct (memory-region
             (:constructor memory-region (pointer size)))

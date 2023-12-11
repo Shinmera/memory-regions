@@ -35,6 +35,7 @@
    #:replace
    #:subregion
    #:with-memory-region
+   #:with-memory-regions
    #:memory-region
    #:memory-region-pointer
    #:memory-region-size

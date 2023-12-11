@@ -251,6 +251,13 @@ If the source is a positive fixnum constant, the memory area is allocated
 directly on the stack.
 
 See CALL-WITH-MEMORY-REGION")
+
+  (function with-memory-regions
+    "Convenience macro to dynamically create multiple memory regions.
+
+The bindings are sequential as by LET*.
+
+See WITH-MEMORY-REGION")
   
   (type memory-region
     "Representation of a region of memory.
