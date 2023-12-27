@@ -1,5 +1,7 @@
 (in-package #:org.shirakumo.memory-regions)
 
+(defvar *stack-allocation-size-limit* (* 1024 8))
+
 (defgeneric start (region))
 (defgeneric end (region))
 (defgeneric size (region))
@@ -106,10 +108,17 @@
 
 (defmethod call-with-memory-region ((function function) (size integer) &key (start 0))
   (decf size start)
-  (cffi:with-foreign-pointer (ptr size)
-    (let ((region (memory-region ptr size)))
-      (declare (dynamic-extent region))
-      (funcall function region))))
+  (if (<= size *stack-allocation-size-limit*)
+      (cffi:with-foreign-pointer (ptr size)
+        (let ((region (memory-region ptr size)))
+          (declare (dynamic-extent region))
+          (funcall function region)))
+      (let ((ptr (cffi:foreign-alloc :uint8 :count size)))
+        (unwind-protect
+             (let ((region (memory-region ptr size)))
+               (declare (dynamic-extent region))
+               (funcall function region))
+          (cffi:foreign-free ptr)))))
 
 (defmethod call-with-memory-region ((function function) pointer &key (size 0) (start 0))
   (check-type pointer cffi:foreign-pointer)

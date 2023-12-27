@@ -25,6 +25,7 @@
    #:bump-allocator)
   ;; memory-region.lisp
   (:export
+   #:*stack-allocation-size-limit*
    #:start
    #:end
    #:size
