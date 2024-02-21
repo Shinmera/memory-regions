@@ -12,6 +12,8 @@ Specifically:
   Provides the allocator protocol and some base implementations.
 - ``memory-regions/sequence``
   Provides the ability to coerce a memory region to a sequence.
+- ``memory-regions/static-vector``
+  Provides a memory region type with static-vector backing storage.
 - ``memory-regions/stream``
   Provides the ability to coerce a memory region to a stream.
 - ``memory-regions/object``
@@ -30,6 +32,8 @@ Memory regions can be created in a couple of ways:
   Coerce another object to a memory region. This will only work for objects that are backed by a memory region themselves, or otherwise have memory that remains static and does not move.
 - ``with-memory-region``
   Coerce another object to a memory region. This will notably work for more objects than ``to-memory-region``, such as standard vectors and arrays, as those can be pinned in place for the duration of the body. This also means that it is a very bad idea to use the provided memory region outside of the body or let it escape in some other way.
+- ``static-vector-memory-region``
+  Creates a new memory region with a Lisp static-vector as its storage. This allows you to address the region's memory directly as a lisp vector.
 - ``allocate``
   Allocate a memory region within the context of an ``allocator``. See ``with-arena`` as well for lexically scoped regions. Using the ``NIL`` allocator is equivalent to manually allocating memory and constructing a region with it.
 

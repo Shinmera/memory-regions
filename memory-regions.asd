@@ -1,5 +1,5 @@
 (asdf:defsystem memory-regions
-  :version "1.0.0"
+  :version "1.1.0"
   :license "zlib"
   :author "Yukari Hafner <shinmera@tymoon.eu>"
   :maintainer "Yukari Hafner <shinmera@tymoon.eu>"
@@ -12,7 +12,8 @@
                :memory-regions/sequence
                :memory-regions/stream
                :memory-regions/object
-               :memory-regions/pathname))
+               :memory-regions/pathname
+               :memory-regions/static-vector))
 
 (asdf:defsystem memory-regions/region
   :serial T
@@ -55,3 +56,9 @@
   :depends-on (:memory-regions/region
                :static-vectors
                :mmap))
+
+(asdf:defsystem memory-regions/static-vector
+  :serial T
+  :components ((:file "static-vector"))
+  :depends-on (:memory-regions/region
+               :static-vectors))

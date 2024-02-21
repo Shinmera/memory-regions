@@ -54,6 +54,10 @@
   (:export
    #:memory-region-sequence
    #:to-sequence)
+  ;; static-vector.lisp
+  (:export
+   #:static-vector-memory-region
+   #:memory-region-vector)
   ;; stream.lisp
   (:export
    #:memory-region-stream

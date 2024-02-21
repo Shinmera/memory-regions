@@ -351,6 +351,38 @@ See TO-SEQUENCE")
 
 See MEMORY-REGION-SEQUENCE (type)"))
 
+;; static-vector.lisp
+(docs:define-docs
+  (type static-vector-memory-region
+    "Representation of a memory region using a static-vector backing.
+
+These regions will survive an image dump and their underlying memory
+is accessible as a Lisp vector as well. Note that while they will
+survive dumping, the address of the region may differ after dump.
+
+Calling DEALLOCATE with NIL as the allocator will deallocate the
+underlying static-vector as well.
+
+See STATIC-VECTOR-MEMORY-REGION
+See MEMORY-REGION-VECTOR")
+
+  (function memory-region-vector
+    "Returns the underlying static-vector backing the memory-region.
+
+See STATIC-VECTOR-MEMORY-REGION (type)")
+
+  (function static-vector-memory-region
+    "Creates a new memory region with static-vector backing.
+
+The argument may either be the length (in octets) of the storage, or a
+static-vector. Note that this call cannot check whether the vector you
+passed is actually a static-vector as allocated by
+STATIC-VECTORS:MAKE-STATIC-VECTOR and things will break badly if you
+pass anything else.
+
+See STATIC-VECTOR-MEMORY-REGION (type)
+See STATIC-VECTORS:MAKE-STATIC-VECTOR"))
+
 ;; stream.lisp
 (docs:define-docs
   (type memory-region-stream
