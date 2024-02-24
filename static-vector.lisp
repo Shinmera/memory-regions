@@ -22,7 +22,7 @@
 (defun static-vector-memory-region (length/vec)
   (etypecase length/vec
     (integer
-     (setf length/vec (static-vectors:make-static-vector length/vec)))
+     (setf length/vec (static-vectors:make-static-vector length/vec :initial-element 0)))
     (vector))
   (%make-static-vector-memory-region
    :pointer (static-vectors:static-vector-pointer length/vec)
