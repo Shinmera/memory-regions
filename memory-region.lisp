@@ -86,6 +86,30 @@
                                    :void)
     dst))
 
+(defmethod replace (dst (src memory-region) &key start1 end1 start2 end2)
+  (check-type dst cffi:foreign-pointer)
+  (let* ((start1 (or start1 0))
+         (start2 (or start2 0))
+         (end2 (or end2 (memory-region-size src)))
+         (to-copy (min (- end1 start1) (- end2 start2))))
+    (cffi:foreign-funcall "memcpy" :pointer dst
+                                   :pointer (memory-region-pointer src)
+                                   :size to-copy
+                                   :void)
+    dst))
+
+(defmethod replace ((dst memory-region) src &key start1 end1 start2 end2)
+  (check-type src cffi:foreign-pointer)
+  (let* ((start1 (or start1 0))
+         (end1 (or end1 (memory-region-size dst)))
+         (start2 (or start2 0))
+         (to-copy (min (- end1 start1) (- end2 start2))))
+    (cffi:foreign-funcall "memcpy" :pointer (memory-region-pointer dst)
+                                   :pointer src
+                                   :size to-copy
+                                   :void)
+    dst))
+
 (defmethod subregion ((region memory-region) &optional start end)
   (let ((start (or start 0))
         (end (or end (memory-region-size region))))
