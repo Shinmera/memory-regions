@@ -176,10 +176,20 @@
   (with-memory-region (dst dst)
     (fill dst byte)))
 
-(defmethod replace (dst src &rest args)
-  (with-memory-region (dst dst)
-    (with-memory-region (src src)
-      (apply #'replace dst src args))))
+(defmethod replace (dst src &rest args &key (start1 0) end1 (start2 0) end2)
+  (if (and (typep dst 'cffi:foreign-pointer)
+           (typep src 'cffi:foreign-pointer))
+      (let ((to-copy (cond ((and end1 end2) (min (- end2 start2) (- end1 start1)))
+                           (end1 (- end1 start1))
+                           (end2 (- end2 start2))
+                           (T (error "Either END1 or END2 have to be passed when replacing two pointers.")))))
+        (cffi:foreign-funcall "memcpy" :pointer (cffi:inc-pointer dst start1)
+                                       :pointer (cffi:inc-pointer src start2)
+                                       :size to-copy
+                                       :void))
+      (with-memory-region (dst dst)
+        (with-memory-region (src src)
+          (apply #'replace dst src args)))))
 
 (defclass memory-region-ish () ())
 
