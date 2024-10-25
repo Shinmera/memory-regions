@@ -8,7 +8,7 @@
 (defgeneric to-memory-region (thing))
 (defgeneric call-with-memory-region (function data &key start &allow-other-keys))
 (defgeneric clear (region))
-(defgeneric fill (dst byte))
+(defgeneric fill (dst byte &key start end))
 (defgeneric replace (dst src &key start1 end1 start2 end2))
 (defgeneric subregion (region &optional start end))
 
@@ -66,11 +66,12 @@
                                  :void)
   region)
 
-(defmethod fill ((region memory-region) byte)
+(defmethod fill ((region memory-region) byte &key (start 0) (end (memory-region-size region)))
   (check-type byte (unsigned-byte 8))
-  (cffi:foreign-funcall "memset" :pointer (memory-region-pointer region)
+  (assert (<= 0 start end (memory-region-size region)))
+  (cffi:foreign-funcall "memset" :pointer (cffi:inc-pointer (memory-region-pointer region) start)
                                  :int byte
-                                 :size (memory-region-size region)
+                                 :size (- end start)
                                  :void)
   region)
 
@@ -172,9 +173,18 @@
   (with-memory-region (dst dst)
     (clear dst)))
 
-(defmethod fill (dst byte)
-  (with-memory-region (dst dst)
-    (fill dst byte)))
+(defmethod fill (dst byte &rest args &key (start 0) end)
+  (cond ((not (typep dst 'cffi:foreign-pointer))
+         (with-memory-region (dst dst)
+           (apply #'fill dst byte args)))
+        ((null end)
+         (error "END has to be passed when filling a pointer."))
+        (T
+         (check-type byte (unsigned-byte 8))
+         (cffi:foreign-funcall "memset" :pointer (cffi:inc-pointer dst start)
+                                        :int byte
+                                        :size (- end start)
+                                        :void))))
 
 (defmethod replace (dst src &rest args &key (start1 0) end1 (start2 0) end2)
   (if (and (typep dst 'cffi:foreign-pointer)
