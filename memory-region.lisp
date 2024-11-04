@@ -81,8 +81,8 @@
          (start2 (or start2 0))
          (end2 (or end2 (memory-region-size src)))
          (to-copy (min (- end1 start1) (- end2 start2))))
-    (cffi:foreign-funcall "memcpy" :pointer (memory-region-pointer dst)
-                                   :pointer (memory-region-pointer src)
+    (cffi:foreign-funcall "memcpy" :pointer (cffi:inc-pointer (memory-region-pointer dst) start1)
+                                   :pointer (cffi:inc-pointer (memory-region-pointer src) start2)
                                    :size to-copy
                                    :void)
     dst))
@@ -93,8 +93,8 @@
              (start2 (or start2 0))
              (end2 (or end2 (memory-region-size src)))
              (to-copy (min (- end1 start1) (- end2 start2))))
-        (cffi:foreign-funcall "memcpy" :pointer dst
-                                       :pointer (memory-region-pointer src)
+        (cffi:foreign-funcall "memcpy" :pointer (cffi:inc-pointer dst start1)
+                                       :pointer (cffi:inc-pointer (memory-region-pointer src) start2)
                                        :size to-copy
                                        :void)
         dst)
@@ -106,8 +106,8 @@
              (end1 (or end1 (memory-region-size dst)))
              (start2 (or start2 0))
              (to-copy (min (- end1 start1) (- end2 start2))))
-        (cffi:foreign-funcall "memcpy" :pointer (memory-region-pointer dst)
-                                       :pointer src
+        (cffi:foreign-funcall "memcpy" :pointer (cffi:inc-pointer (memory-region-pointer dst) start1)
+                                       :pointer (cffi:inc-pointer src start2)
                                        :size to-copy
                                        :void)
         dst)
