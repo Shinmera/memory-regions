@@ -43,7 +43,7 @@
     (read-sequence array stream)
     (stream-memory-region (static-vectors:static-vector-pointer array) size stream array)))
 
-(defmethod call-with-memory-region (function (data pathname) &key (offset 0))
+(defmethod call-with-memory-region ((function function) (data pathname) &key (offset 0))
   #+mmap
   (mmap:with-mmap (ptr fd size data)
     (let ((region (memory-region (cffi:inc-pointer ptr offset) (- size offset))))
