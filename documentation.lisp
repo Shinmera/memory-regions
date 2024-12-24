@@ -173,6 +173,18 @@ See ALLOCATOR (type)"))
 
 ;; memory-region.lisp
 (docs:define-docs
+  (variable *stack-allocation-size-limit*
+    "The maximum number of octets to allocate on the stack in one chunk.
+
+CALL-WITH-MEMORY-REGION will consider this variable to determine whether
+to allocate a temporary vector on the stack with dynamic-extent or on
+the heap. Allocating vectors that are too big on the stack may blow up
+the stack size limit.
+
+Defaults 8kB.
+
+See CALL-WITH-MEMORY-REGION")
+
   (function start
     "Returns a pointer to the start of the memory region.
 
@@ -211,9 +223,14 @@ source.
 If a CFFI:FOREIGN-POINTER is passed as the source, you must also pass
 a SIZE argument to provide the memory region's extents.
 
+If an INTEGER is passed as the source, a temporary memory region is
+constructed for use. *STACK-ALLOCATION-SIZE-LIMIT* is used to determine
+where to store the temporary memory.
+
 See MEMORY-REGION (type)
 See TO-MEMORY-REGION
-See WITH-MEMORY-REGION")
+See WITH-MEMORY-REGION
+See *STACK-ALLOCATION-SIZE-LIMIT*")
   
   (function clear
     "Clears the memory region and fills it with zeroes.
