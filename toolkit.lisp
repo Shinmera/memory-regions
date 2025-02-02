@@ -1,18 +1,7 @@
 (in-package #:org.shirakumo.memory-regions)
 
-(defun element-type-size (type)
-  (case type
-    (short-float 2)
-    (single-float 4)
-    (double-float 8)
-    (long-float 16)
-    (fixnum #+64-bit 8 #-64-bit 4)
-    (base-char 1)
-    (character #+asdf-unicode 4 #-asdf-unicode 1)
-    (T (if (listp type)
-           (ceiling (second type) 8)
-           (error "Unknown element type: ~a" type)))))
-
+;; KLUDGE: this whole thing sucks pretty bad.
+(declaim (inline element-type->c-type))
 (defun element-type->c-type (type)
   (case type
     (short-float :short-float)
@@ -21,7 +10,11 @@
     (long-float :long-double)
     (fixnum :ssize)
     (base-char :char)
-    (character :uint32)
+    (character #+asdf-unicode :uint32 #-asdf-unicode :char)
+    #+ecl (ext:byte8 :int8)
+    #+ecl (ext:byte16 :int16)
+    #+ecl (ext:byte32 :int32)
+    #+ecl (ext:byte64 :int64)
     (T (if (listp type)
            (ecase (first type)
              (unsigned-byte
@@ -38,6 +31,26 @@
                 (32 :int32)
                 (64 :int64)
                 (128 :int128))))
+           (error "Unknown element type: ~a" type)))))
+
+(declaim (inline element-type-size))
+(defun element-type-size (type)
+  (case type
+    (short-float 2)
+    (single-float 4)
+    (double-float 8)
+    (long-float 16)
+    (fixnum (cffi:foreign-type-size :ssize))
+    (base-char 1)
+    (character #+asdf-unicode 4 #-asdf-unicode 1)
+    #+ecl (ext:byte8 1)
+    #+ecl (ext:byte16 2)
+    #+ecl (ext:byte32 4)
+    #+ecl (ext:byte64 8)
+    (T (if (listp type)
+           (ecase (first type)
+             ((unsigned-byte signed-byte)
+              (ceiling (second type) 8)))
            (error "Unknown element type: ~a" type)))))
 
 (defmacro with-pointer-to-array-data ((ptr data &key (direction :input)) &body body)
