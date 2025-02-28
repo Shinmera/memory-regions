@@ -73,7 +73,12 @@
             (let ((,ptr (sb-ext:array-storage-vector ,datag)))
               (sb-sys:with-pinned-objects (,ptr)
                 (,thunk (sb-sys:vector-sap ,ptr)))))
-           #-sbcl
+           ;; Only use CFFI:WITH-POINTER-TO-VECTOR-DATA on impls that support
+           ;; doing so for arbitrary vectors that don't require special allocation.
+           ;; Meaning we exclude LispWorks, Allegro, and ABCL and force the slow
+           ;; path in all cases on those impls (until they finally support lexical
+           ;; pinning).
+           #+(or openmcl scl clasp ecl mkcl mcl cmucl clisp)
            (vector
             (cffi:with-pointer-to-vector-data (,ptr ,datag)
               (,thunk ,ptr)))
