@@ -159,6 +159,7 @@
 (defmethod call-with-memory-region ((function function) (data array) &key (start 0) (direction :input))
   (declare (optimize speed))
   (declare (type (unsigned-byte 32) start))
+  (declare (ignore direction))
   (let* ((type (array-element-type data))
          (type-size (the (unsigned-byte 16) (element-type-size type)))
          (start (* start type-size))

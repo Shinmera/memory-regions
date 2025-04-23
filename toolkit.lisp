@@ -50,7 +50,7 @@
     (T (if (listp type)
            (ecase (first type)
              ((unsigned-byte signed-byte)
-              (ceiling (second type) 8)))
+              (ceiling (the (unsigned-byte 16) (second type)) 8)))
            (error "Unknown element type: ~a" type)))))
 
 (defmacro with-pointer-to-array-data ((ptr data &key (direction :input)) &body body)
