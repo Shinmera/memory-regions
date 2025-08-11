@@ -4,9 +4,9 @@
   :author "Yukari Hafner <shinmera@tymoon.eu>"
   :maintainer "Yukari Hafner <shinmera@tymoon.eu>"
   :description "Implementation of a memory region abstraction"
-  :homepage "https://shinmera.github.io/memory-regions/"
-  :bug-tracker "https://github.com/shinmera/memory-regions/issues"
-  :source-control (:git "https://github.com/shinmera/memory-regions.git")
+  :homepage "https://shinmera.com/docs/memory-regions/"
+  :bug-tracker "https://shinmera.com/project/memory-regions/issues"
+  :source-control (:git "https://shinmera.com/project/memory-regions.git")
   :depends-on (:memory-regions/region
                :memory-regions/allocator
                :memory-regions/sequence
